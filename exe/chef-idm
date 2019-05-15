@@ -10,19 +10,19 @@ require 'chef/idm'
 # end
 
 # Process the AD groups for the Chef Org
-def process_chef_org_group_dname(cheforg, group_dname)
+def process_chef_org_group(cheforg, group_cname, group_dname)
   ldap_cnames = Chef::Idm.ldap_group(group_dname).member_cnames
   puts "  ldap cnames are #{ldap_cnames}"
   chef_users = Chef::Idm.cheforg(cheforg).user_list
   puts "  chef users #{chef_users.inspect}"
-  
+
 end
 
 # Process a Chef Org
 def process_chef_org(cheforg, orgparams)
-  orgparams['groups'].each do |group_dname|
-    puts "Processing ChefOrg #{cheforg} ADGroup #{group_dname}"
-    process_chef_org_group_dname(cheforg, group_dname)
+  orgparams['groups'].each do |group_cname, group_dname|
+    puts "Processing ChefOrg #{cheforg} ChefGroup #{group_cname} ADGroup #{group_dname}"
+    process_chef_org_group(cheforg, group_cname, group_dname)
   end
 end
 
