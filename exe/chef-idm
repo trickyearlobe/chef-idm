@@ -3,21 +3,19 @@
 require 'chef'
 require 'chef/idm'
 
-# Set the chef group membership for the Chef Org
-def set_chef_group_membership(cheforg,chef_group_cname,member_cnames)
-  puts "  Setting chef group #{chef_group_cname} members to #{member_cnames}"
-end
+
+# # Set the chef group membership for the Chef Org
+# def set_chef_group_membership(cheforg,chef_group_cname,member_cnames)
+#   puts "  Setting chef group #{chef_group_cname} members to #{member_cnames}"
+# end
 
 # Process the AD groups for the Chef Org
 def process_chef_org_group_dname(cheforg, group_dname)
-  member_cnames=[]
-  member_dnames = Chef::Idm::Ldap::Group.members(group_dname)
-  member_dnames.each do |member_dname|
-    puts "  Found #{member_dname}"
-    member_cnames << Chef::Idm::Ldap::User.cname(member_dname)
-  end
-  chef_group_cname = Chef::Idm::Ldap::Group.cname(group_dname)
-  set_chef_group_membership(cheforg, chef_group_cname, member_cnames)
+  ldap_cnames = Chef::Idm.ldap_group(group_dname).member_cnames
+  puts "  ldap cnames are #{ldap_cnames}"
+  chef_users = Chef::Idm.cheforg(cheforg).user_list
+  puts "  chef users #{chef_users.inspect}"
+  
 end
 
 # Process a Chef Org
@@ -28,7 +26,11 @@ def process_chef_org(cheforg, orgparams)
   end
 end
 
+
 # Loop through Chef Organisations
-Chef::Idm.config.organizations.each do |cheforg,orgparams|
+Chef::Idm.config.organizations.each do |cheforg, orgparams|
   process_chef_org(cheforg, orgparams)
 end
+
+require 'pry'; binding.pry
+puts 'Done'

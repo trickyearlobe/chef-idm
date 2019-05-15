@@ -1,44 +1,25 @@
 class Chef
   class Idm
     class Ldap
-      class User
+      class User < Chef::Idm::Ldap::Entity
 
-        def self.list
-          Chef::Idm::Ldap.search('objectClass','user').map do |user|
-            user.samaccountname.first
-          end
-        end
-
-        def self.find(dname)
-          Chef::Idm::Ldap.search('distinguishedname', dname)
-        end
-
-        def self.exist?(dname)
-          userlist = self.find(dname)
-          if userlist.length == 1
-            if userlist.first.objectclass.include? "user"
-              true
+        def initialize(dn)
+          super(dn,'user')
+          if exist?
+            @useraccountcontrol = @entity.useraccountcontrol.first.to_i
+            if (@useraccountcontrol & 2) == 2
+              @disabled = true
             else
-              false
+              @disabled = false
             end
           end
         end
 
-
-        def self.cname(dname)
-          userlist = self.find(dname)
-          if userlist.length == 1
-            userlist.first.samaccountname.first
-          else
-            nil
-          end
+        def disabled
+          @disabled
         end
 
       end
     end
   end
 end
-
-
-      
-

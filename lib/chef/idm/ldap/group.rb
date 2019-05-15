@@ -1,46 +1,22 @@
 class Chef
   class Idm
     class Ldap
-      class Group
+      class Group < Chef::Idm::Ldap::Entity
 
-        def self.list
-          Chef::Idm::Ldap.search('objectClass','group').map do |group|
-            group.samaccountname.first
-          end
-        end
+        attr_reader :member_cnames, :member_dnames
 
-        def self.find(groupname)
-          Chef::Idm::Ldap.search('distinguishedname', groupname)
-        end
-
-        def self.exist?(groupname)
-          grouplist = self.find(groupname)
-          if grouplist.length == 1
-            if grouplist.first.objectclass.include? "group"
-              true
-            else
-              false
-            end
-          end
-        end
-
-        def self.members(groupname)
-          grouplist = self.find(groupname) 
-          if grouplist.length == 1
-            if grouplist.first.objectclass.include? "group"
-              grouplist.first.member
-            else
-              nil
-            end
-          end
-        end
-
-        def self.cname(dname)
-          grouplist = self.find(dname)
-          if grouplist.length == 1
-            grouplist.first.samaccountname.first
-          else
-            nil
+        def initialize(dn)
+          super(dn,'group')
+          @member_cnames = []
+          @member_dnames = []
+          if exist?
+            # require 'pry'; binding.pry
+            @entity.member.each do |member_dn|
+              if Chef::Idm.ldap_user(member_dn).exist?
+                @member_dnames << Chef::Idm.ldap_user(member_dn).dname
+                @member_cnames << Chef::Idm.ldap_user(member_dn).cname
+              end  
+            end        
           end
         end
 

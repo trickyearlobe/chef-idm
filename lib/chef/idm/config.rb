@@ -46,9 +46,5 @@ class Chef
 
     end
 
-    def self.config
-      Chef::Idm::Config.new
-    end
-
   end
 end

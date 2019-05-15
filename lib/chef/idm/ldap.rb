@@ -1,6 +1,7 @@
 require 'net/ldap'
-require 'chef/idm/ldap/group'
+require 'chef/idm/ldap/entity'
 require 'chef/idm/ldap/user'
+require 'chef/idm/ldap/group'
 
 class Chef
   class Idm
