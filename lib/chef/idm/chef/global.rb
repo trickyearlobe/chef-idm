@@ -26,7 +26,22 @@ class Chef
           api.post('/users',myuser)
         end
       end
-    end
 
+      def user_update(cname,fname,mname,lname,dname,email)
+        if (user_list.include?(cname)) && valid_object_name?(cname)
+          puts "  updating chef user #{cname}"
+          myuser = {
+            name: cname,
+            display_name: dname,
+            email: email,
+            first_name: fname,
+            last_name: lname,
+            middle_name: mname
+          }
+          api.put("/users/#{cname}",myuser)
+        end
+      end
+
+    end
   end
 end

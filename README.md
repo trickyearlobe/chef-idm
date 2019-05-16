@@ -27,6 +27,7 @@ Fill it with config like this
   "organizations": {
     "contoso": {
         "allowed": "CN=Chef Users,OU=chef,DC=contoso,DC=local",
+        "ignore": ["delivery","admin"],
         "groups": {
           "admins": "CN=contoso-chef-admins,OU=chef,DC=contoso,DC=local",
           "group1": "CN=group1,OU=chef,DC=contoso,DC=local",

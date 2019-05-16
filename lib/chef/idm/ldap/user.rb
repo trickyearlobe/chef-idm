@@ -45,7 +45,7 @@ class Chef
 
         def last_name
           if entity.attribute_names.include? :sn
-            entity.middlename.first
+            entity.sn.first
           else
             cname
           end
