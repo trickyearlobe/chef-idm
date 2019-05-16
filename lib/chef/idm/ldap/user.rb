@@ -20,7 +20,7 @@ class Chef
         end
 
         def email
-          if entity.respond_to? :mail
+          if entity.attribute_names.include? :mail
             entity.mail.first
           else
             "#{cname}@has.no.email.address"
@@ -28,7 +28,7 @@ class Chef
         end
 
         def first_name
-          if entity.respond_to? :givenname
+          if entity.attribute_names.include? :givenname
             entity.givenname.first
           else
             cname
@@ -36,7 +36,7 @@ class Chef
         end
 
         def middle_name
-          if entity.respond_to? :middlename
+          if entity.attribute_names.include? :middlename
             entity.middlename.first
           else
             ""
@@ -44,7 +44,7 @@ class Chef
         end
 
         def last_name
-          if entity.respond_to? :sn
+          if entity.attribute_names.include? :sn
             entity.middlename.first
           else
             cname
@@ -52,7 +52,7 @@ class Chef
         end
 
         def display_name
-          if entity.respond_to? :displayname
+          if entity.attribute_names.include? :displayname
             entity.displayname.first
           else
             cname

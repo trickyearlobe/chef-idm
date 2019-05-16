@@ -47,4 +47,5 @@ Chef::Idm.config.organizations.each do |cheforg, orgparams|
   process_chef_org(cheforg, orgparams)
 end
 
+# require 'pry'; binding.pry
 puts 'Done'
