@@ -19,11 +19,21 @@ end
 def process_chef_org(cheforg, orgparams)
   # Ensure all the users exist at a global level
   puts "Checking chef users exist for chef org #{cheforg}"
-  allowed_users = Chef::Idm.ldap_group(orgparams['allowed']).member_cnames
-  allowed_users.each do |username|
-    Chef::Idm.chefglobal.user_add(username)
+  allowed_users = Chef::Idm.ldap_group(orgparams['allowed']).member_dnames
+  allowed_users.each do |dname|
+    user = Chef::Idm.ldap_user(dname)
+    Chef::Idm.chefglobal.user_add(
+      user.cname,
+      user.first_name,
+      user.middle_name,
+      user.last_name,
+      user.display_name,
+      user.email,
+      Chef::Idm.config.chef_default_user_password || SecureRandom.hex
+    )
   end
   # Now set the Org associations
+  allowed_users = Chef::Idm.ldap_group(orgparams['allowed']).member_cnames
   Chef::Idm.cheforg(cheforg).user_associations_set(allowed_users)
   # Now iterate the groups that should be configured
   orgparams['groups'].each do |chefgroup, adgroup|

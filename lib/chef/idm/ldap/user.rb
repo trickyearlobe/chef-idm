@@ -19,6 +19,46 @@ class Chef
           @disabled
         end
 
+        def email
+          if entity.respond_to? :mail
+            entity.mail.first
+          else
+            "#{cname}@has.no.email.address"
+          end
+        end
+
+        def first_name
+          if entity.respond_to? :givenname
+            entity.givenname.first
+          else
+            cname
+          end
+        end
+
+        def middle_name
+          if entity.respond_to? :middlename
+            entity.middlename.first
+          else
+            ""
+          end
+        end
+
+        def last_name
+          if entity.respond_to? :sn
+            entity.middlename.first
+          else
+            cname
+          end
+        end
+
+        def display_name
+          if entity.respond_to? :displayname
+            entity.displayname.first
+          else
+            cname
+          end
+        end
+
       end
     end
   end
