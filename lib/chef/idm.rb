@@ -1,7 +1,7 @@
 require "chef/idm/version"
 require "chef/idm/config"
 require "chef/idm/ldap"
-require "chef/idm/cheforg"
+require "chef/idm/chef"
 require 'openssl'
 require 'securerandom'
 
@@ -13,12 +13,17 @@ class Chef
       @config ||= Chef::Idm::Config.new
     end
 
-    # Caching for ChefOrg objects
+    # Caching for Chef::Org objects
     def self.cheforg(orgname)
       @chef_orgs ||= {}
       @chef_orgs[orgname] ||= Chef::Idm::ChefOrg.new(orgname)
     end
 
+    # Caching for Chef::Global object
+    def self.chefglobal
+      @chef_global ||= Chef::Idm::ChefGlobal.new
+    end
+    
     # Caching for Ldap::User objects
     def self.ldap_user(user_dn)
       @ldap_users ||= {}

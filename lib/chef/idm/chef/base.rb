@@ -1,7 +1,8 @@
 class Chef
   class Idm
-  
-    class ChefOrg
+    class ChefBase
+
+      OBJECT_NAME_SPEC = /^[\-[:alnum:]_\.]+$/
 
       def initialize(orgname = nil)
         @orgname = orgname
@@ -23,29 +24,14 @@ class Chef
         @api
       end
 
-      def user_list
-        @users ||= @api.get('/users').map {|u| u['user']['username']}
+      def valid_object_name?(name)
+        if OBJECT_NAME_SPEC.match(name)
+          true
+        else
+          false
+        end
       end
 
-      def global_user_list
-      end
-
-      def new_global_user(cname)
-        myuser = {
-          name: cname,
-          display_name: cname,
-          email: "#{cname}@noreply.com",
-          first_name: cname,
-          last_name: cname,
-          middle_name: cname,
-          password: SecureRandom.hex,
-          "public_key": OpenSSL::PKey::RSA.new(2048).public_key.to_s
-        }
-      end
     end
-
   end
 end
-
-# TODO: Fix make this a config item
-Chef::Config['ssl_verify_mode'] = :verify_none
