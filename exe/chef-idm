@@ -5,15 +5,28 @@ require 'chef/idm'
 
 # Process the AD groups for the Chef Org
 def process_chef_org_group(cheforg, chefgroup, adgroup)
-  ldap_cnames = Chef::Idm.ldap_group(adgroup).member_cnames
-  puts "  Setting Chef group #{chefgroup} users #{ldap_cnames}"
-  Chef::Idm.cheforg(cheforg).group_set_users(chefgroup,ldap_cnames)
+  if Chef::Idm.ldap_group(adgroup).exist?
+    puts "Setting Chef #{cheforg}/#{chefgroup} members from #{adgroup}"
+    ldap_cnames = Chef::Idm.ldap_group(adgroup).member_cnames
+    puts "  users are #{ldap_cnames}"
+    Chef::Idm.cheforg(cheforg).group_set_users(chefgroup,ldap_cnames)
+  else
+    puts "Couldn't set Chef #{cheforg}/#{chefgroup} members from #{adgroup}"
+  end
 end
 
 # Process a Chef Org
 def process_chef_org(cheforg, orgparams)
+  # Ensure all the users exist at a global level
+  puts "Checking chef users exist for chef org #{cheforg}"
+  allowed_users = Chef::Idm.ldap_group(orgparams['allowed']).member_cnames
+  allowed_users.each do |username|
+    Chef::Idm.chefglobal.user_add(username)
+  end
+  # Now set the Org associations
+  Chef::Idm.cheforg(cheforg).user_associations_set(allowed_users)
+  # Now iterate the groups that should be configured
   orgparams['groups'].each do |chefgroup, adgroup|
-    puts "Processing ChefOrg #{cheforg} ChefGroup #{chefgroup} ADGroup #{adgroup}"
     process_chef_org_group(cheforg, chefgroup, adgroup)
   end
 end
@@ -24,5 +37,4 @@ Chef::Idm.config.organizations.each do |cheforg, orgparams|
   process_chef_org(cheforg, orgparams)
 end
 
-require 'pry'; binding.pry
 puts 'Done'

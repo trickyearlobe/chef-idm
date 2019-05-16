@@ -40,6 +40,10 @@ class Chef
         @@config['chef_fqdn']
       end
 
+      def chef_default_user_password
+        @@config['chef_default_user_password']
+      end
+
       def organizations
         @@config['organizations']
       end

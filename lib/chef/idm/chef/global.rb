@@ -12,6 +12,7 @@ class Chef
 
       def user_add(cname)
         unless (user_list.include?(cname)) || !valid_object_name?(cname)
+          puts "  creating chef user #{cname}"
           myuser = {
             name: cname,
             display_name: cname,
@@ -19,7 +20,7 @@ class Chef
             first_name: cname,
             last_name: cname,
             middle_name: cname,
-            password: SecureRandom.hex,
+            password: Chef::Idm.config.chef_default_user_password || SecureRandom.hex,
             "public_key": OpenSSL::PKey::RSA.new(2048).public_key.to_s
           }
           api.post('/users',myuser)

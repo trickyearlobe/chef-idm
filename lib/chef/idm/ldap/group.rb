@@ -10,13 +10,14 @@ class Chef
           @member_cnames = []
           @member_dnames = []
           if exist?
-            # require 'pry'; binding.pry
-            @entity.member.each do |member_dn|
-              if Chef::Idm.ldap_user(member_dn).exist?
-                @member_dnames << Chef::Idm.ldap_user(member_dn).dname
-                @member_cnames << Chef::Idm.ldap_user(member_dn).cname
-              end  
-            end        
+            if @entity.respond_to? :member
+              @entity.member.each do |member_dn|
+                if Chef::Idm.ldap_user(member_dn).exist?
+                  @member_dnames << Chef::Idm.ldap_user(member_dn).dname
+                  @member_cnames << Chef::Idm.ldap_user(member_dn).cname
+                end  
+              end        
+            end
           end
         end
 
