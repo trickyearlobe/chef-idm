@@ -19,7 +19,7 @@ class Chef
             email: email,
             first_name: fname,
             last_name: lname,
-            middle_name: mname,
+            # middle_name: mname,
             password: password,
             "public_key": OpenSSL::PKey::RSA.new(2048).public_key.to_s
           }

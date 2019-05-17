@@ -4,12 +4,12 @@ require 'chef'
 require 'chef/idm'
 
 # Process the AD groups for the Chef Org
-def process_chef_org_group(cheforg, chefgroup, adgroup)
+def process_chef_org_group(cheforg, chefgroup, adgroup, ignore)
   if Chef::Idm.ldap_group(adgroup).exist?
     puts "Setting Chef #{cheforg}/#{chefgroup} members from #{adgroup}"
     ldap_cnames = Chef::Idm.ldap_group(adgroup).member_cnames
     puts "  users are #{ldap_cnames}"
-    Chef::Idm.cheforg(cheforg).group_set_users(chefgroup,ldap_cnames)
+    Chef::Idm.cheforg(cheforg).group_set_users(chefgroup,ldap_cnames, ignore || [])
   else
     puts "Couldn't set Chef #{cheforg}/#{chefgroup} members from #{adgroup}"
   end
@@ -34,10 +34,10 @@ def process_chef_org(cheforg, orgparams)
   end
   # Now set the Org associations
   allowed_users = Chef::Idm.ldap_group(orgparams['allowed']).member_cnames
-  Chef::Idm.cheforg(cheforg).user_associations_set(allowed_users)
+  Chef::Idm.cheforg(cheforg).user_associations_set(allowed_users, orgparams['ignore'] || [])
   # Now iterate the groups that should be configured
   orgparams['groups'].each do |chefgroup, adgroup|
-    process_chef_org_group(cheforg, chefgroup, adgroup)
+    process_chef_org_group(cheforg, chefgroup, adgroup, orgparams['ignore'])
   end
 end
 

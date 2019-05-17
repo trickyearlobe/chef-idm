@@ -34,7 +34,7 @@ class Chef
         end
       end
 
-      def user_associations_set(usernames)
+      def user_associations_set(usernames, nomodify=[])
         puts "  ensuring associations #{usernames}"
         initial_list = user_list
         # Associate any new users
@@ -43,7 +43,10 @@ class Chef
         end
         # Disassociate users who should not be here
         initial_list.each do |username|
-          user_disassociate(username) unless usernames.include?(username)
+          user_disassociate(username) unless (
+            (usernames.include?(username)) ||
+            (nomodify.include?(username))
+          )
         end
       end
 
@@ -62,15 +65,16 @@ class Chef
         end
       end
 
-      def group_set_users(groupname, users)
+      def group_set_users(groupname, users, nomodify=[])
         if valid_object_name?(groupname)
           group_create(groupname)
           existing_group = group_get(groupname)
+          keepusers = existing_group['users'] & nomodify
           new_group = {
             "groupname" => existing_group["groupname"],
             "orgname"   => existing_group["orgname"],
             "actors"    => {
-              "users"   => users,
+              "users"   => users | keepusers,
               "clients" => existing_group["clients"],
               "groups"  => existing_group["groups"]
             }
@@ -79,9 +83,9 @@ class Chef
         end
       end
 
-      def group_remove_user(groupname, username)
+      def group_remove_user(groupname, username, nomodify=[])
         existing_group = group_get(groupname)
-        if existing_group['users'].include?(username)
+        if (existing_group['users'].include?(username)) && (!nomodify.include?(username))
           puts "  removing user #{username} from #{groupname} group"
           existing_group['users'].delete(username)
           new_group = {
