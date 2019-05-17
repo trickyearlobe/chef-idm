@@ -9,13 +9,13 @@ rake install
 
 ## Usage
 
-Make a config file at `~/.chef-idm/config.json`
+Make a config file at `~/.chef-idm/config.json` (~/ is the user's home directory)
 
 Fill it with config like this
 
 ``` json
 {
-  "ad_bind_dn":       "chefidm@contoso.local",
+  "ad_bind_dn":       "CN=chefidm,OU=users,DC=contoso,DC=local",
   "ad_base_dn":       "dc=contoso,dc=local",
   "ad_bind_password": "secret_bind_password!",
   "ad_fqdn":          "dc1.contoso.local",
@@ -42,4 +42,12 @@ Fill it with config like this
 
 ``` bash
 chef-idm
+```
+
+## Updating user data from AD
+
+If you somehow managed to get users with no/incorrect data for names, emails etc. you can repopulate the ones managed by `chef-idm` from LDAP like this
+
+``` bash
+chef-update-users
 ```
