@@ -19,7 +19,7 @@ class Chef
             email: email,
             first_name: fname,
             last_name: lname,
-            # middle_name: mname,
+            external_authentication_uid: cname,
             password: password,
             "public_key": OpenSSL::PKey::RSA.new(2048).public_key.to_s
           }
@@ -36,7 +36,8 @@ class Chef
             email: email,
             first_name: fname,
             last_name: lname,
-            middle_name: mname
+            middle_name: mname,
+            external_authentication_uid: cname
           }
           api.put("/users/#{cname}",myuser)
         end
