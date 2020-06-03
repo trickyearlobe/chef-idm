@@ -10,11 +10,22 @@ It's a widget for syncing users from Active Directory (AD) to Chef server.
 - Removes users from Orgs/Groups when they are removed in AD
 
 ## Installation
+On your Chef server
+* Install a recent ChefDK or Chef Workstation.
+* Set up any paths needed to be able to use the embedded ruby/rake that belong to the ChefDK/Workstation
+* Get the sourcecode, built it and install it
 
 ``` bash
-cd path/to/chef-idm
+# Get the source code
+git clone git@github.com:trickyearlobe/chef-idm.git
+
+# Build and install the GEM
+cd chef-idm
 rake install
 ```
+
+**PLEASE DON'T** `rake install` this GEM directly into the embedded ruby that belongs to Chef server.
+Doing so may prevent your Chef server restarting until you fix the permissions.
 
 ## Usage
 
@@ -46,6 +57,12 @@ Fill it with config like this
   }
 }
 ```
+
+* `organizations` contains the list of Chef orgs to be managed
+* `allowed` is the AD group that allows membership of a specific org.
+* `ignore` stops the tool managing certain users in an org
+* `groups` is a mapping of Chef Groups and AD groups to be created/populated
+* `chef_default_user_password` is the Chef default local user password. It's only used when AD/LDAP is disabled.
 
 ## Syncing with AD
 
