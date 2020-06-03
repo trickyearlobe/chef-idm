@@ -62,7 +62,7 @@ Fill it with config like this
 * `allowed` is the AD group that allows membership of a specific org.
 * `ignore` stops the tool managing certain users in an org
 * `groups` is a mapping of Chef Groups and AD groups to be created/populated
-* `chef_default_user_password` is the Chef default local user password. It's only used when AD/LDAP is disabled.
+* `chef_default_user_password` is the Chef default local user password. It's only used when AD/LDAP is disabled. If not set, a randomised password will be used.
 
 ## Syncing with AD
 
