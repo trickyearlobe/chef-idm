@@ -1,5 +1,14 @@
 # chef-idm Gem
 
+## What is it?
+It's a widget for syncing users from Active Directory (AD) to Chef server.
+
+- Registers the users and their details with Chef server
+- Associates users with the correct Chef Orgs using AD groups
+- Creates Chef groups in the correct Orgs
+- Adds users to the correct groups
+- Removes users from Orgs/Groups when they are removed in AD
+
 ## Installation
 
 ``` bash
